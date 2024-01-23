@@ -2,8 +2,8 @@
 
 open BeachMobile.ImageService
 
-module QueryImage =
+module QueryImages =
 
-    let item          : Operations.Get           = fun v -> task { return Error "" }
-    let byCategory    : Operations.GetByCategory = fun v -> task { return Error "" }
-    let allCategories : Operations.GetAll        = fun v -> task { return Error "" }
+    let byItem     : Operations.Get           = fun v -> task { return Error "" }
+    let byCategory : Operations.GetByCategory = fun v -> task { return Error "" }
+    let all        : Operations.GetAll        = fun v -> task { return Error "" }

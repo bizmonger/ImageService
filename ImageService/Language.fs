@@ -27,5 +27,6 @@ module Language =
     type AddRequest = {
         TenantId : string
         Category : string
-        Images   : byte[] seq
+        Title    : string
+        Image    : byte[]
     }

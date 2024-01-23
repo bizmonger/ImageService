@@ -24,7 +24,12 @@ module Language =
         Data : byte[]
     }
 
-    type AddRequest = {
+    type AddTenantRequest = {
+        TenantId : string
+        ImageCategories : string seq
+    }
+
+    type AddImageRequest = {
         TenantId : string
         Category : string
         Title    : string

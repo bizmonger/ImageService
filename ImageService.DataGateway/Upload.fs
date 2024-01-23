@@ -13,9 +13,18 @@ type ServiceUri() =
 
     static member val Instance = "" with get,set
 
+module Tenant =
+
+    let add : Operations.AddTenant = 
+    
+        fun request -> task { 
+        
+            return Error ""; 
+        }
+
 module Upload =
 
-    let image : Operations.Add = 
+    let image : Operations.AddImage = 
     
         fun image -> task { 
         

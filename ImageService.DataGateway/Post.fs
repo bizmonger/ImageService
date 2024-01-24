@@ -10,10 +10,6 @@ open Azure.Storage.Blobs
 open Azure.Storage.Blobs.Models
 open BeachMobile.ImageService.Operations
 
-type ServiceUri() =
-
-    static member val Instance = "" with get,set
-
 module Tenant =
 
     let add : Tenant.Add = 

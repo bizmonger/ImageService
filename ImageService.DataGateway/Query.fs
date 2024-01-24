@@ -8,9 +8,27 @@ open System.IO
 open Azure.Storage.Blobs
 open Azure.Storage.Blobs.Models
 open BeachMobile.ImageService
+open Operations
 
 module QueryImages =
 
-    let byItem     : Operations.Get           = fun v -> task { return Error "" }
-    let byCategory : Operations.GetByCategory = fun v -> task { return Error "" }
-    let all        : Operations.GetAll        = fun v -> task { return Error "" }
+    let byItem : Download.Item = 
+
+        fun v -> task {
+
+            return Error "" 
+        }
+
+    let byCategory : Download.Category =
+
+        fun v -> task {
+
+            return Error "" 
+        }
+
+    let all : Download.All  =
+
+        fun v -> task {
+
+            return Error "" 
+        }

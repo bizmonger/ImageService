@@ -8,7 +8,7 @@ open System.IO
 open Azure.Identity
 open Azure.Storage.Blobs
 open Azure.Storage.Blobs.Models
-open BeachMobile.ImageService
+open BeachMobile.ImageService.Operations
 
 type ServiceUri() =
 
@@ -16,7 +16,7 @@ type ServiceUri() =
 
 module Tenant =
 
-    let add : Operations.AddTenant = 
+    let add : Tenant.Add = 
     
         fun v -> task {
 
@@ -34,7 +34,7 @@ module Tenant =
 
 module Upload =
 
-    let image : Operations.Add = 
+    let image : Upload.Image = 
     
         fun image -> task { 
         
@@ -45,5 +45,5 @@ module Upload =
 
             blobClient.UploadAsync(new MemoryStream(image.Content)) |> ignore
 
-            return Ok(); 
+            return Ok()
         }

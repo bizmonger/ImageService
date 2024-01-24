@@ -5,9 +5,9 @@ open Language
 
 module Operations =
 
-    type Get           = ImageRequest          -> Task<Result<Image, ErrorDescription>>
-    type GetByCategory = CategoryImagesRequest -> Task<Result<Image, ErrorDescription>>
-    type GetAll        = AllImagesRequest      -> Task<Result<Image, ErrorDescription>>
+    type Get           = ImageRequest          -> Task<Result<Image , ErrorDescription>>
+    type GetByCategory = CategoryImagesRequest -> Task<Result<Images, ErrorDescription>>
+    type GetAll        = AllImagesRequest      -> Task<Result<Images, ErrorDescription>>
 
     type AddTenant = AddTenantRequest -> Task<Result<unit, ErrorDescription>>
-    type AddImage  = AddImageRequest  -> Task<Result<unit, ErrorDescription>>
+    type Add       = AddImageRequest  -> Task<Result<unit, ErrorDescription>>

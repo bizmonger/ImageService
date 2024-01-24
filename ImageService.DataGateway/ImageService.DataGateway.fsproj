@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Query.fs" />
-    <Compile Include="Upload.fs" />
+    <Compile Include="Post.fs" />
   </ItemGroup>
 
   <ItemGroup>

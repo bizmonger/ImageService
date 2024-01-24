@@ -4,9 +4,10 @@
 // https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet?tabs=visual-studio%2Cmanaged-identity%2Croles-azure-portal%2Csign-in-azure-cli%2Cidentity-visual-studio
 
 open System
+open System.IO
 open Azure.Identity
 open Azure.Storage.Blobs
-open System.IO
+open Azure.Storage.Blobs.Models
 open BeachMobile.ImageService
 
 type ServiceUri() =
@@ -17,14 +18,23 @@ module Tenant =
 
     let add : Operations.AddTenant = 
     
-        fun request -> task { 
-        
-            return Error ""; 
+        fun v -> task {
+
+            try
+                let client = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+
+                let addContainer name = client.CreateBlobContainerAsync(name, PublicAccessType.Blob).Wait()
+                
+                v.ImageCategories |> Seq.iter(fun c -> addContainer c)
+
+                return Ok ()
+
+            with ex -> return Error (ex.GetBaseException().Message)
         }
 
 module Upload =
 
-    let image : Operations.AddImage = 
+    let image : Operations.Add = 
     
         fun image -> task { 
         
@@ -32,7 +42,8 @@ module Upload =
             let  serviceClient   = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
             let  containerClient = serviceClient.GetBlobContainerClient(containerName)
             let  blobClient      = containerClient.GetBlobClient(image.Title)
-            blobClient.UploadAsync(new MemoryStream(image.Image)) |> ignore
+
+            blobClient.UploadAsync(new MemoryStream(image.Content)) |> ignore
 
             return Ok(); 
         }

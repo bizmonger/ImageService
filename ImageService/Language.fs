@@ -24,6 +24,8 @@ module Language =
         Data : byte[]
     }
 
+    type Images = Image seq
+
     type AddTenantRequest = {
         TenantId : string
         ImageCategories : string seq
@@ -33,5 +35,5 @@ module Language =
         TenantId : string
         Category : string
         Title    : string
-        Image    : byte[]
+        Content  : byte[]
     }

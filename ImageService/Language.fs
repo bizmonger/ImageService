@@ -6,13 +6,14 @@ module Language =
     type ImageId = string
 
     type ImageRequest = {
-        Id       : ImageId
-        TenantId : string
+        ImageId   : ImageId
+        Container : string
+        TenantId  : string
     }
 
-    type CategoryImagesRequest = {
-        TenantId : string
-        Category : string
+    type ContainerImagesRequest = {
+        TenantId  : string
+        Container : string
     }
 
     type AllImagesRequest = {
@@ -28,12 +29,12 @@ module Language =
 
     type AddTenantRequest = {
         TenantId : string
-        ImageCategories : string seq
+        ImageContainers : string seq
     }
 
     type AddImageRequest = {
-        TenantId : string
-        Category : string
-        Title    : string
-        Content  : byte[]
+        TenantId  : string
+        Container : string
+        Title     : string
+        Content   : byte[]
     }

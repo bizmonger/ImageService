@@ -8,6 +8,7 @@ open Azure.Storage.Blobs
 open Azure.Storage.Blobs.Models
 open Azure.Identity
 open BeachMobile.ImageService
+open Language
 open Operations
 
 type ServiceUri() =
@@ -24,6 +25,7 @@ module ListImages =
                 let serviceClient   = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
                 let containerClient = serviceClient.GetBlobContainerClient(containerName)
                 let blobNames       = containerClient.GetBlobs() |> Seq.map(fun blob -> blob.Name)
+
                 return Ok blobNames
 
             with ex -> return Error (ex.GetBaseException().Message)
@@ -33,7 +35,7 @@ module ListImages =
 
         fun v -> task {
 
-            try return! $"{v.TenantId}-{v.Category}" |> getBlobNames
+            try return! $"{v.TenantId}-{v.Container}" |> getBlobNames
             with ex -> return Error (ex.GetBaseException().Message)
         }
 
@@ -59,8 +61,7 @@ module ListImages =
                         | Error _ -> Seq.empty
                         | Ok v    -> v
                         
-                    let items = result |> Seq.map(fun r -> r |> getValue) 
-                                       |> Seq.concat
+                    let items = result |> Seq.map(getValue) |> Seq.concat
                     return Ok items
 
             with ex -> return Error (ex.GetBaseException().Message)
@@ -68,23 +69,85 @@ module ListImages =
 
 module DownloadImages =
 
+    let private download (imageId:ImageId) (container:BlobContainerClient) =
+
+        try
+            let blobClient = container.GetBlobClient(imageId)
+            let response   = blobClient.DownloadContent()
+
+            if response.HasValue then
+
+                let data = response.Value.Content.ToArray()
+                Ok { Id= imageId; Data= data }
+             
+            else Error $"Blob not found: {container}:{imageId}"
+
+        with ex -> Error <| ex.GetBaseException().Message
+
     let byItem : Download.Item = 
 
         fun v -> task {
 
-            return Error "" 
+            try 
+                let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                let container     = serviceClient.GetBlobContainerClient(v.Container)
+
+                return download v.ImageId container
+
+            with ex -> return Error (ex.GetBaseException().Message)
         }
 
-    let byCategory : Download.Category =
+    let byContainer : Download.Container =
 
         fun v -> task {
 
-            return Error "" 
+            try 
+                let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                let container  = serviceClient.GetBlobContainerClient(v.Container)
+
+                let result = container.GetBlobs() |> Seq.map(fun blobItem -> download blobItem.Name container)
+
+                match result |> Seq.forall(fun r -> match r with | Ok _ -> true | Error _ -> false) with
+                | false -> return Error "Error downloading all blob items"
+                | true  ->
+
+                    let getValue(result:Result<Image,string>) = result |> function
+                        | Error _ -> None
+                        | Ok v    -> Some v
+                        
+                    let downloads = result |> Seq.map(getValue) |> Seq.choose id
+                    return Ok downloads
+
+            with ex -> return Error (ex.GetBaseException().Message)
         }
 
     let all : Download.All  =
 
         fun v -> task {
 
-            return Error "" 
+            let toContainerImagesRequest containerName : ContainerImagesRequest = {
+                    TenantId  = v.TenantId
+                    Container = containerName
+                }
+
+            try
+                let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                let result = serviceClient.GetBlobContainers(BlobContainerTraits.Metadata, BlobContainerStates.None, v.TenantId)
+                             |> Seq.map(fun c -> c.Name |> toContainerImagesRequest |> byContainer |> Async.AwaitTask)
+                             |> Async.Parallel 
+                             |> Async.RunSynchronously
+                             |> Array.toSeq
+                
+                match result |> Seq.forall(fun r -> match r with | Ok _ -> true | Error _ -> false) with
+                | false -> return Error "Error downloading all blob items"
+                | true  ->
+
+                    let getValue(result:Result<Image seq,string>) = result |> function
+                        | Error _ -> None
+                        | Ok v    -> Some v
+                        
+                    let downloads = result |> Seq.map(getValue) |> Seq.choose id
+                    return Ok (downloads |> Seq.concat)
+
+            with ex -> return Error (ex.GetBaseException().Message) 
         }

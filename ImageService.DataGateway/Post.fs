@@ -21,7 +21,7 @@ module Tenant =
 
                 let addContainer name = client.CreateBlobContainerAsync(name, PublicAccessType.Blob).Wait()
                 
-                v.ImageCategories |> Seq.iter(fun c -> addContainer c)
+                v.ImageContainers |> Seq.iter(fun c -> addContainer c)
 
                 return Ok ()
 
@@ -34,7 +34,7 @@ module Upload =
     
         fun image -> task { 
         
-            let  containerName   = $"{image.TenantId}-{image.Category}"
+            let  containerName   = $"{image.TenantId}-{image.Container}"
             let  serviceClient   = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
             let  containerClient = serviceClient.GetBlobContainerClient(containerName)
             let  blobClient      = containerClient.GetBlobClient(image.Title)

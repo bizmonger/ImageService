@@ -67,7 +67,7 @@ module ListImages =
             with ex -> return Error (ex.GetBaseException().Message)
         }
 
-module DownloadImages =
+module Download =
 
     let private download (imageId:ImageId) (container:BlobContainerClient) =
 
@@ -84,7 +84,7 @@ module DownloadImages =
 
         with ex -> Error <| ex.GetBaseException().Message
 
-    let byItem : Download.Item = 
+    let item : Download.Item = 
 
         fun v -> task {
 
@@ -97,7 +97,7 @@ module DownloadImages =
             with ex -> return Error (ex.GetBaseException().Message)
         }
 
-    let byContainer : Download.Container =
+    let container : Download.Container =
 
         fun v -> task {
 
@@ -134,7 +134,7 @@ module DownloadImages =
             try
                 let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
                 let result = serviceClient.GetBlobContainers(BlobContainerTraits.Metadata, BlobContainerStates.None, v.TenantId)
-                             |> Seq.map(fun c -> c.Name |> toContainerImagesRequest |> byContainer |> Async.AwaitTask)
+                             |> Seq.map(fun c -> c.Name |> toContainerImagesRequest |> container |> Async.AwaitTask)
                              |> Async.Parallel 
                              |> Async.RunSynchronously
                              |> Array.toSeq

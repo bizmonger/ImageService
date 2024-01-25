@@ -10,21 +10,29 @@ let ``Download image`` () =
     task {
 
         // Test
-        match! DownloadImages.byItem someImageRequest with
+        match! Download.item someImageRequest with
         | Error msg -> Assert.Fail msg
         | Ok _      -> Assert.Pass()
     }
 
 [<Test>]
-let ``Download images`` () =
+let ``Download container images`` () =
 
     task {
 
-        // Setup
+        // Test
+        match! Download.container someContainerImagesRequest with
+        | Error msg -> Assert.Fail msg
+        | Ok _      -> Assert.Pass()
+    }
 
+[<Test>]
+let ``Download all images`` () =
+
+    task {
 
         // Test
-        match! Upload.images someAddImagesRequest with
+        match! Download.all someAllImagesRequest with
         | Error msg -> Assert.Fail msg
         | Ok _      -> Assert.Pass()
     }

@@ -20,6 +20,15 @@ module Mock =
         Items = seq [someAddImageRequest]
     }
 
+    let someContainerImagesRequest : ContainerImagesRequest = {
+        TenantId  = someTenantId
+        Container = someContainer1
+    }
+
+    let someAllImagesRequest : AllImagesRequest = {
+        TenantId = someTenantId
+    }
+
     let someAddTenantRequest : AddTenantRequest = {
         TenantId = someTenantId
         ImageContainers = [someContainer1; someContainer2]

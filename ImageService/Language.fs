@@ -38,3 +38,7 @@ module Language =
         Title     : string
         Content   : byte[]
     }
+
+    type AddImagesRequest = {
+        Items : AddImageRequest seq
+    }

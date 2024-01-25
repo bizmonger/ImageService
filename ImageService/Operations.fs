@@ -12,9 +12,9 @@ module Operations =
 
     module Download =
 
-        type Item     = ImageRequest           -> Task<Result<Image , ErrorDescription>>
+        type Item      = ImageRequest           -> Task<Result<Image , ErrorDescription>>
         type Container = ContainerImagesRequest -> Task<Result<Images, ErrorDescription>>
-        type All      = AllImagesRequest       -> Task<Result<Images, ErrorDescription>>
+        type All       = AllImagesRequest       -> Task<Result<Images, ErrorDescription>>
 
     module Tenant =
 
@@ -22,4 +22,5 @@ module Operations =
 
     module Upload =
 
-        type Image = AddImageRequest -> Task<Result<unit, ErrorDescription>>
+        type Image  = AddImageRequest  -> Task<Result<unit, ErrorDescription>>
+        type Images = AddImagesRequest -> Task<Result<unit, ErrorDescription>>

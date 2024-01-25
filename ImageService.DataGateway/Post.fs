@@ -43,3 +43,18 @@ module Upload =
 
             return Ok()
         }
+
+    let images : Upload.Images = 
+    
+        fun requests -> task {
+        
+            let result = requests.Items |> Seq.map(fun r -> r |> image |> Async.AwaitTask)
+                                        |> Async.Parallel
+                                        |> Async.RunSynchronously
+                                        |> Seq.forall(fun r -> match r with 
+                                                               | Ok _    -> true 
+                                                               | Error _ -> false)
+            match result with
+            | false -> return Error "Error uploading all blob items"
+            | true  -> return Ok ()
+        }

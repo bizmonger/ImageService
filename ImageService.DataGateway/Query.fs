@@ -105,7 +105,8 @@ module DownloadImages =
                 let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
                 let container  = serviceClient.GetBlobContainerClient(v.Container)
 
-                let result = container.GetBlobs() |> Seq.map(fun blobItem -> download blobItem.Name container)
+                let result = container.GetBlobs() 
+                             |> Seq.map(fun blobItem -> download blobItem.Name container)
 
                 match result |> Seq.forall(fun r -> match r with | Ok _ -> true | Error _ -> false) with
                 | false -> return Error "Error downloading all blob items"

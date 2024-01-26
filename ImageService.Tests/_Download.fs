@@ -21,7 +21,7 @@ let ``Download container images`` () =
     task {
 
         // Test
-        match! Download.container someContainerImagesRequest with
+        match! Download.container someContainerRequest with
         | Error msg -> Assert.Fail msg
         | Ok _      -> Assert.Pass()
     }

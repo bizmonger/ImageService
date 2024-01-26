@@ -12,6 +12,7 @@
     <Compile Include="_Tenant.fs" />
     <Compile Include="_Upload.fs" />
     <Compile Include="_Download.fs" />
+    <Compile Include="_Container.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

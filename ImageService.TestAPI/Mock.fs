@@ -20,7 +20,7 @@ module Mock =
         Items = seq [someAddImageRequest]
     }
 
-    let someContainerImagesRequest : ContainerImagesRequest = {
+    let someContainerRequest : ContainerRequest = {
         TenantId  = someTenantId
         Container = someContainer1
     }
@@ -39,3 +39,5 @@ module Mock =
         Container = someContainer1
         TenantId  = someTenantId
     }
+
+    let someAddContainersRequest = [someContainerRequest]

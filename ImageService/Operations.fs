@@ -7,13 +7,13 @@ module Operations =
 
     module List =
 
-        type ByCategory = ContainerImagesRequest -> Task<Result<string seq, ErrorDescription>>
+        type ByCategory = ContainerRequest -> Task<Result<string seq, ErrorDescription>>
         type All        = AllImagesRequest       -> Task<Result<string seq, ErrorDescription>>
 
     module Download =
 
         type Item      = ImageRequest           -> Task<Result<Image , ErrorDescription>>
-        type Container = ContainerImagesRequest -> Task<Result<Images, ErrorDescription>>
+        type Container = ContainerRequest -> Task<Result<Images, ErrorDescription>>
         type All       = AllImagesRequest       -> Task<Result<Images, ErrorDescription>>
 
     module Tenant =

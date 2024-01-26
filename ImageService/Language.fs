@@ -11,7 +11,7 @@ module Language =
         TenantId  : string
     }
 
-    type ContainerImagesRequest = {
+    type ContainerRequest = {
         TenantId  : string
         Container : string
     }
@@ -43,16 +43,6 @@ module Language =
         Items : AddImageRequest seq
     }
 
-    type AddContainerRequest = {
-        TenantId  : string
-        Container : string
-    }
+    type AddContainersRequest = ContainerRequest seq
 
-    type AddContainersRequest = AddContainerRequest seq
-
-    type RemoveContainerRequest = {
-        TenantId  : string
-        Container : string
-    }
-
-    type RemoveContainersRequest = RemoveContainerRequest seq
+    type RemoveContainersRequest = ContainerRequest seq

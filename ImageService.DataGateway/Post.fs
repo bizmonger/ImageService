@@ -60,14 +60,14 @@ module Upload =
             | true  -> return Ok ()
         }
 
-module Create =
+module Containers =
 
-    let containers : Container.Add =
+    let add : Container.Add =
 
         fun v -> task {
         
             try
-                let add(request:AddContainerRequest) =
+                let add(request:ContainerRequest) =
 
                     task {
                         let  containerName = $"{request.TenantId}-{request.Container}"
@@ -96,7 +96,7 @@ module Create =
         fun v -> task {
         
             try
-                let delete(request:RemoveContainerRequest) =
+                let delete(request:ContainerRequest) =
 
                     task {
                         let  containerName = $"{request.TenantId}-{request.Container}"

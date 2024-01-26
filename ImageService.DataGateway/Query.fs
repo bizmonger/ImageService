@@ -126,7 +126,7 @@ module Download =
 
         fun v -> task {
 
-            let toContainerImagesRequest containerName : ContainerImagesRequest = {
+            let toContainerImagesRequest containerName : ContainerRequest = {
                     TenantId  = v.TenantId
                     Container = containerName
                 }

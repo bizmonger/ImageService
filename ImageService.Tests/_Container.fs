@@ -10,7 +10,7 @@ let ``Add container`` () =
     task {
 
         // Test
-        match! Containers.add someAddContainersRequest with
+        match! Containers.add someContainersRequest with
         | Error msg -> Assert.Fail msg
         | Ok _      -> Assert.Pass()
     }
@@ -20,8 +20,13 @@ let ``Remove container`` () =
 
     task {
 
-        // Test
-        match! Containers.remove someAddContainersRequest with
+        // Setup
+        match! Containers.add someContainersRequest with
         | Error msg -> Assert.Fail msg
-        | Ok _      -> Assert.Pass()
+        | Ok _ ->
+
+            // Test
+            match! Containers.remove someContainersRequest with
+            | Error msg -> Assert.Fail msg
+            | Ok _      -> Assert.Pass()
     }

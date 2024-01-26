@@ -22,10 +22,11 @@ module Operations =
 
     module Upload =
 
-        type Image  = AddImageRequest  -> Task<Result<unit, ErrorDescription>>
-        type Images = AddImagesRequest -> Task<Result<unit, ErrorDescription>>
+        type Image  = UploadImageRequest  -> Task<Result<unit, ErrorDescription>>
+        type Images = UploadImagesRequest -> Task<Result<unit, ErrorDescription>>
 
     module Container =
         
-        type Add    = AddContainersRequest    -> Task<Result<unit, ErrorDescription>>
-        type Remove = RemoveContainersRequest -> Task<Result<unit, ErrorDescription>>
+        type Add          = AddContainersRequest -> Task<Result<unit, ErrorDescription>>
+        type Remove       = ContainersRequest    -> Task<Result<unit, ErrorDescription>>
+        type RemoveImages = ImageRequests        -> Task<Result<unit, ErrorDescription>>

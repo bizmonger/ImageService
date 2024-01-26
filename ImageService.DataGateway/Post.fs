@@ -35,10 +35,10 @@ module Upload =
     
         fun image -> task { 
         
-            let  containerName   = $"{image.TenantId}-{image.Container}"
+            let  containerName   = $"{image.Details.TenantId}-{image.Details.Container}"
             let  serviceClient   = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
             let  containerClient = serviceClient.GetBlobContainerClient(containerName)
-            let  blobClient      = containerClient.GetBlobClient(image.Title)
+            let  blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
 
             blobClient.UploadAsync(new MemoryStream(image.Content)) |> ignore
 
@@ -118,4 +118,11 @@ module Containers =
                             | true  -> Ok ()
 
             with ex -> return Error <| ex.GetBaseException().Message
+        }
+
+    let removeImages : Container.RemoveImages =
+
+        fun v -> task {
+            
+            return Error ""
         }

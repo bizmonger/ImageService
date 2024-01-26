@@ -12,7 +12,7 @@ let ``Add tenant`` () =
     task {
 
         // Test
-        match! Tenant.add someAddTenantRequest with
+        match! Tenant.add someTenantRequest with
         | Error msg -> Assert.Fail msg
         | Ok _      -> Assert.Pass()
     }

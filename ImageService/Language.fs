@@ -32,17 +32,17 @@ module Language =
         ImageContainers : string seq
     }
 
-    type AddImageRequest = {
-        TenantId  : string
-        Container : string
-        Title     : string
-        Content   : byte[]
+    type UploadImageRequest = {
+        Details : ImageRequest
+        Content : byte[]
     }
 
-    type AddImagesRequest = {
-        Items : AddImageRequest seq
+    type UploadImagesRequest = {
+        Items : UploadImageRequest seq
     }
+
+    type ImageRequests = ImageRequest seq
 
     type AddContainersRequest = ContainerRequest seq
 
-    type RemoveContainersRequest = ContainerRequest seq
+    type ContainersRequest = ContainerRequest seq

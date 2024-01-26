@@ -9,6 +9,7 @@ open Azure.Identity
 open Azure.Storage.Blobs
 open Azure.Storage.Blobs.Models
 open BeachMobile.ImageService.Operations
+open BeachMobile.ImageService.Language
 
 module Tenant =
 
@@ -57,4 +58,64 @@ module Upload =
             match result with
             | false -> return Error "Error uploading all blob items"
             | true  -> return Ok ()
+        }
+
+module Create =
+
+    let containers : Container.Add =
+
+        fun v -> task {
+        
+            try
+                let add(request:AddContainerRequest) =
+
+                    task {
+                        let  containerName = $"{request.TenantId}-{request.Container}"
+                        let  serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                        let! response = serviceClient.CreateBlobContainerAsync(containerName, PublicAccessType.Blob)
+
+                        if response.HasValue
+                        then return Ok()
+                        else return Error $"Failed to create container: {containerName}"
+                    }
+
+                return v |> Seq.map (fun c -> c |> add |> Async.AwaitTask)
+                         |> Async.Parallel
+                         |> Async.RunSynchronously
+                         |> Seq.ofArray
+                         |> Seq.forall(fun r -> match r with | Ok _ -> true | Error _ -> false)
+                         |> function
+                            | false -> Error "Failed to create all conatiners"
+                            | true  -> Ok ()
+
+            with ex -> return Error <| ex.GetBaseException().Message
+        }
+
+    let remove : Container.Remove =
+
+        fun v -> task {
+        
+            try
+                let delete(request:RemoveContainerRequest) =
+
+                    task {
+                        let  containerName = $"{request.TenantId}-{request.Container}"
+                        let  serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                        let! response = serviceClient.DeleteBlobContainerAsync(containerName)
+
+                        if not response.IsError
+                        then return Ok()
+                        else return Error $"Failed to remove container: {containerName}"
+                    }
+
+                return v |> Seq.map (fun c -> c |> delete |> Async.AwaitTask)
+                         |> Async.Parallel
+                         |> Async.RunSynchronously
+                         |> Seq.ofArray
+                         |> Seq.forall(fun r -> match r with | Ok _ -> true | Error _ -> false)
+                         |> function
+                            | false -> Error "Failed to remove all conatiners"
+                            | true  -> Ok ()
+
+            with ex -> return Error <| ex.GetBaseException().Message
         }

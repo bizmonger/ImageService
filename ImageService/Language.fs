@@ -42,3 +42,17 @@ module Language =
     type AddImagesRequest = {
         Items : AddImageRequest seq
     }
+
+    type AddContainerRequest = {
+        TenantId  : string
+        Container : string
+    }
+
+    type AddContainersRequest = AddContainerRequest seq
+
+    type RemoveContainerRequest = {
+        TenantId  : string
+        Container : string
+    }
+
+    type RemoveContainersRequest = RemoveContainerRequest seq

@@ -24,3 +24,8 @@ module Operations =
 
         type Image  = AddImageRequest  -> Task<Result<unit, ErrorDescription>>
         type Images = AddImagesRequest -> Task<Result<unit, ErrorDescription>>
+
+    module Container =
+        
+        type Add    = AddContainersRequest    -> Task<Result<unit, ErrorDescription>>
+        type Remove = RemoveContainersRequest -> Task<Result<unit, ErrorDescription>>

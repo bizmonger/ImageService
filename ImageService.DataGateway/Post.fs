@@ -35,14 +35,19 @@ module Upload =
     
         fun image -> task { 
         
-            let  containerName   = $"{image.Details.TenantId}-{image.Details.Container}"
-            let  serviceClient   = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
-            let  containerClient = serviceClient.GetBlobContainerClient(containerName)
-            let  blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
+            try
+                let containerName   = $"{image.Details.TenantId}-{image.Details.Container}"
+                let serviceClient   = BlobServiceClient(ServiceUri.Instance)
+                let containerClient = serviceClient.GetBlobContainerClient(containerName)
+                let blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
 
-            blobClient.UploadAsync(new MemoryStream(image.Content)) |> ignore
+                let! response = blobClient.UploadAsync(new MemoryStream(image.Content))
 
-            return Ok()
+                if response.HasValue
+                then return Ok()
+                else return Error "Failed to upload image"
+
+            with ex -> return Error <| ex.GetBaseException().Message
         }
 
     let images : Upload.Images = 
@@ -71,8 +76,8 @@ module Containers =
 
                     task {
                         let  containerName = $"{request.TenantId}-{request.Container}"
-                        let  serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
-                        let! response = serviceClient.CreateBlobContainerAsync(containerName, PublicAccessType.Blob)
+                        let  serviceClient = BlobServiceClient(ServiceUri.Instance)
+                        let! response = serviceClient.CreateBlobContainerAsync(containerName)
 
                         if response.HasValue
                         then return Ok()
@@ -100,7 +105,7 @@ module Containers =
 
                     task {
                         let  containerName = $"{request.TenantId}-{request.Container}"
-                        let  serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                        let  serviceClient = BlobServiceClient(ServiceUri.Instance)
                         let! response = serviceClient.DeleteBlobContainerAsync(containerName)
 
                         if not response.IsError
@@ -123,6 +128,28 @@ module Containers =
     let removeImages : Container.RemoveImages =
 
         fun v -> task {
-            
-            return Error ""
+
+            try
+
+                let  serviceClient = BlobServiceClient(ServiceUri.Instance)
+
+                let delete (r:ImageRequest) =
+
+                    let containerName   = $"{r.TenantId}-{r.Container}"
+                    let containerClient = serviceClient.GetBlobContainerClient(containerName)
+                    let response = containerClient.DeleteBlob(r.ImageId)
+
+                    if response.IsError
+                    then Error $"Failed to delete blob: {r.ImageId}"
+                    else Ok()
+    
+                return
+
+                    v |> Seq.map(delete)
+                      |> Seq.forall(fun r -> match r with | Ok _ -> true | Error _ -> false)
+                      |> function
+                         | false -> Error "Failed to remove all conatiners"
+                         | true  -> Ok ()
+
+            with ex -> return Error <| ex.GetBaseException().Message
         }

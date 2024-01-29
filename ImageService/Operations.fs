@@ -7,7 +7,7 @@ module Operations =
 
     module List =
 
-        type ByCategory = ContainerRequest -> Task<Result<string seq, ErrorDescription>>
+        type ByContainer = ContainerRequest -> Task<Result<string seq, ErrorDescription>>
         type All        = AllImagesRequest       -> Task<Result<string seq, ErrorDescription>>
 
     module Download =

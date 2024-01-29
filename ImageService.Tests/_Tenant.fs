@@ -1,7 +1,6 @@
 module ImageService.Tenant.Tests
 
 open NUnit.Framework
-open BeachMobile.ImageService.Language
 open ImageService.DataGateway
 
 open ImageService.TestAPI.Mock

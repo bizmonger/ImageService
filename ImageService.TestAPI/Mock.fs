@@ -4,7 +4,7 @@ open BeachMobile.ImageService.Language
 
 module Mock =
 
-    let someTenantId   = "some tenant id"
+    let someTenantId   = "some-tenant-id"
     let someContainer1 = "some-container-1"
     let someContainer2 = "some-container-2"
     let someTitle      = "some title"

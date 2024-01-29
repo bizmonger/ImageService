@@ -3,11 +3,15 @@ module ImageService.Download.Tests
 open NUnit.Framework
 open ImageService.DataGateway
 open ImageService.TestAPI.Mock
+open System.Configuration
 
 [<Test>]
 let ``Download image`` () =
 
     task {
+
+        // Setup
+        ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
         // Test
         match! Download.item someImageRequest with
@@ -20,6 +24,9 @@ let ``Download container images`` () =
 
     task {
 
+        // Setup
+        ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
+
         // Test
         match! Download.container someContainerRequest with
         | Error msg -> Assert.Fail msg
@@ -30,6 +37,9 @@ let ``Download container images`` () =
 let ``Download all images`` () =
 
     task {
+
+        // Setup
+        ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
         // Test
         match! Download.all someAllImagesRequest with

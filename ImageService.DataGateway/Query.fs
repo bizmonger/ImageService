@@ -11,9 +11,7 @@ open BeachMobile.ImageService
 open Language
 open Operations
 
-type ServiceUri() =
-
-    static member val Instance = "" with get,set
+type ServiceUri() = static member val Instance = "" with get,set
 
 module ListImages =
 
@@ -31,7 +29,7 @@ module ListImages =
             with ex -> return Error (ex.GetBaseException().Message)
         }
 
-    let byCategory : List.ByCategory =
+    let byContainer : List.ByContainer =
 
         fun v -> task {
 

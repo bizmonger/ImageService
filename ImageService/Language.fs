@@ -9,12 +9,14 @@ module Language =
         ImageId   : ImageId
         Container : string
         TenantId  : string
-    }
+
+    } with member x.QualifiedContainerName = $"{x.TenantId}-{x.Container}"
 
     type ContainerRequest = {
         TenantId  : string
         Container : string
-    }
+
+    } with member x.QualifiedName = $"{x.TenantId}-{x.Container}"
 
     type AllImagesRequest = {
         TenantId : string

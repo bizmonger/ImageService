@@ -20,7 +20,7 @@ module ListImages =
         task {
 
             try
-                let serviceClient   = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                let serviceClient   = BlobServiceClient(ServiceUri.Instance)
                 let containerClient = serviceClient.GetBlobContainerClient(containerName)
                 let blobNames       = containerClient.GetBlobs() |> Seq.map(fun blob -> blob.Name)
 
@@ -33,7 +33,7 @@ module ListImages =
 
         fun v -> task {
 
-            try return! $"{v.TenantId}-{v.Container}" |> getBlobNames
+            try return! v.QualifiedName |> getBlobNames
             with ex -> return Error (ex.GetBaseException().Message)
         }
 
@@ -42,8 +42,8 @@ module ListImages =
         fun v -> task {
 
             try
-                let serviceClient  = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
-                let containers     = serviceClient.GetBlobContainers(BlobContainerTraits.Metadata, BlobContainerStates.None, v.TenantId) |> Seq.map(id)
+                let serviceClient = BlobServiceClient(ServiceUri.Instance)
+                let containers    = serviceClient.GetBlobContainers(BlobContainerTraits.Metadata, BlobContainerStates.None, v.TenantId) |> Seq.map(id)
                 let containerNames = containers |> Seq.map(fun c -> c.Name)
 
                 let result = containerNames |> Seq.map(fun c -> c |> getBlobNames |> Async.AwaitTask)
@@ -87,8 +87,8 @@ module Download =
         fun v -> task {
 
             try 
-                let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
-                let container     = serviceClient.GetBlobContainerClient(v.Container)
+                let serviceClient = BlobServiceClient(ServiceUri.Instance)
+                let container = serviceClient.GetBlobContainerClient(v.QualifiedContainerName)
 
                 return download v.ImageId container
 
@@ -100,8 +100,8 @@ module Download =
         fun v -> task {
 
             try 
-                let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
-                let container  = serviceClient.GetBlobContainerClient(v.Container)
+                let serviceClient = BlobServiceClient(ServiceUri.Instance)
+                let container = serviceClient.GetBlobContainerClient(v.QualifiedName)
 
                 let result = container.GetBlobs() 
                              |> Seq.map(fun blobItem -> download blobItem.Name container)
@@ -130,9 +130,9 @@ module Download =
                 }
 
             try
-                let serviceClient = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
+                let serviceClient = BlobServiceClient(ServiceUri.Instance)
                 let result = serviceClient.GetBlobContainers(BlobContainerTraits.Metadata, BlobContainerStates.None, v.TenantId)
-                             |> Seq.map(fun c -> c.Name |> toContainerImagesRequest |> container |> Async.AwaitTask)
+                             |> Seq.map(fun c -> c.Name.Replace($"{v.TenantId}-","") |> toContainerImagesRequest |> container |> Async.AwaitTask)
                              |> Async.Parallel 
                              |> Async.RunSynchronously
                              |> Array.toSeq

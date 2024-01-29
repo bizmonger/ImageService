@@ -8,13 +8,13 @@ module Operations =
     module List =
 
         type ByContainer = ContainerRequest -> Task<Result<string seq, ErrorDescription>>
-        type All        = AllImagesRequest       -> Task<Result<string seq, ErrorDescription>>
+        type All         = AllImagesRequest  -> Task<Result<string seq, ErrorDescription>>
 
     module Download =
 
-        type Item      = ImageRequest           -> Task<Result<Image , ErrorDescription>>
+        type Item      = ImageRequest     -> Task<Result<Image , ErrorDescription>>
         type Container = ContainerRequest -> Task<Result<Images, ErrorDescription>>
-        type All       = AllImagesRequest       -> Task<Result<Images, ErrorDescription>>
+        type All       = AllImagesRequest -> Task<Result<Images, ErrorDescription>>
 
     module Tenant =
 

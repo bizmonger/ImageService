@@ -14,7 +14,7 @@ let ``Upload image`` () =
         // Setup
         ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
-        let request = { TenantId  = someTenantId; Container = someContainer1 }
+        let request = { TenantId= someTenantId; Container= someContainer1 }
 
         match! Containers.add [request] with
         | Error msg -> Assert.Fail msg
@@ -39,7 +39,7 @@ let ``Upload images`` () =
         // Setup
         ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
-        let request = { TenantId  = someTenantId; Container = someContainer1 }
+        let request = { TenantId= someTenantId; Container= someContainer1 }
 
         match! Containers.add [request] with
         | Error msg -> Assert.Fail msg

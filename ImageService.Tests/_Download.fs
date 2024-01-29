@@ -1,9 +1,10 @@
 module ImageService.Download.Tests
 
+open System.Configuration
 open NUnit.Framework
 open ImageService.DataGateway
 open ImageService.TestAPI.Mock
-open System.Configuration
+open BeachMobile.ImageService.Language
 
 [<Test>]
 let ``Download image`` () =
@@ -13,10 +14,25 @@ let ``Download image`` () =
         // Setup
         ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
-        // Test
-        match! Download.item someImageRequest with
+        let request = { TenantId= someTenantId; Container= someContainer1 }
+
+        match! Containers.add [request] with
         | Error msg -> Assert.Fail msg
-        | Ok _      -> Assert.Pass()
+        | Ok _ ->
+
+            match! Upload.image someAddImageRequest with
+            | Error msg -> Assert.Fail msg
+            | Ok _      ->
+
+                // Test
+                match! Download.item someImageRequest with
+                | Error msg -> Assert.Fail msg
+                | Ok _ ->
+
+                // Teardown
+                match! Containers.remove [request] with
+                | Error msg -> Assert.Fail()
+                | Ok _      -> Assert.Pass()
     }
 
 [<Test>]
@@ -27,10 +43,25 @@ let ``Download container images`` () =
         // Setup
         ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
-        // Test
-        match! Download.container someContainerRequest with
+        let request = { TenantId= someTenantId; Container= someContainer1 }
+
+        match! Containers.add [request] with
         | Error msg -> Assert.Fail msg
-        | Ok _      -> Assert.Pass()
+        | Ok _ ->
+
+            match! Upload.image someAddImageRequest with
+            | Error msg -> Assert.Fail msg
+            | Ok _      ->
+
+                // Test
+                match! Download.container someContainerRequest with
+                | Error msg -> Assert.Fail msg
+                | Ok _ ->
+
+                // Teardown
+                match! Containers.remove [request] with
+                | Error msg -> Assert.Fail()
+                | Ok _      -> Assert.Pass()
     }
 
 [<Test>]
@@ -41,8 +72,23 @@ let ``Download all images`` () =
         // Setup
         ServiceUri.Instance <- ConfigurationManager.AppSettings["StorageConectionString"]
 
-        // Test
-        match! Download.all someAllImagesRequest with
+        let request = { TenantId= someTenantId; Container= someContainer1 }
+
+        match! Containers.add [request] with
         | Error msg -> Assert.Fail msg
-        | Ok _      -> Assert.Pass()
+        | Ok _ ->
+
+            match! Upload.image someAddImageRequest with
+            | Error msg -> Assert.Fail msg
+            | Ok _      ->
+
+                // Test
+                match! Download.all someAllImagesRequest with
+                | Error msg -> Assert.Fail msg
+                | Ok _ ->
+
+                // Teardown
+                match! Containers.remove [request] with
+                | Error msg -> Assert.Fail msg
+                | Ok _      -> Assert.Pass()
     }

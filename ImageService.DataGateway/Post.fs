@@ -3,11 +3,8 @@
 // https://learn.microsoft.com/en-us/azure/cdn/cdn-app-dev-net
 // https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet?tabs=visual-studio%2Cmanaged-identity%2Croles-azure-portal%2Csign-in-azure-cli%2Cidentity-visual-studio
 
-open System
 open System.IO
-open Azure.Identity
 open Azure.Storage.Blobs
-open Azure.Storage.Blobs.Models
 open BeachMobile.ImageService.Operations
 open BeachMobile.ImageService.Language
 
@@ -18,13 +15,7 @@ module Tenant =
         fun v -> task {
 
             try
-                let client = BlobServiceClient(Uri(ServiceUri.Instance), DefaultAzureCredential())
-
-                let addContainer name = client.CreateBlobContainerAsync(name, PublicAccessType.Blob).Wait()
-                
-                v.ImageContainers |> Seq.iter(fun c -> addContainer c)
-
-                return Ok ()
+                return Error "TODO"
 
             with ex -> return Error (ex.GetBaseException().Message)
         }
@@ -36,7 +27,7 @@ module Upload =
         fun image -> task { 
         
             try
-                let containerName   = $"{image.Details.TenantId}-{image.Details.Container}"
+                let containerName   = image.Details.QualifiedContainerName
                 let serviceClient   = BlobServiceClient(ServiceUri.Instance)
                 let containerClient = serviceClient.GetBlobContainerClient(containerName)
                 let blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
@@ -75,7 +66,7 @@ module Containers =
                 let add(request:ContainerRequest) =
 
                     task {
-                        let  containerName = $"{request.TenantId}-{request.Container}"
+                        let  containerName = request.QualifiedName
                         let  serviceClient = BlobServiceClient(ServiceUri.Instance)
                         let! response = serviceClient.CreateBlobContainerAsync(containerName)
 
@@ -104,7 +95,7 @@ module Containers =
                 let delete(request:ContainerRequest) =
 
                     task {
-                        let  containerName = $"{request.TenantId}-{request.Container}"
+                        let  containerName = request.QualifiedName
                         let  serviceClient = BlobServiceClient(ServiceUri.Instance)
                         let! response = serviceClient.DeleteBlobContainerAsync(containerName)
 
@@ -135,7 +126,7 @@ module Containers =
 
                 let delete (r:ImageRequest) =
 
-                    let containerName   = $"{r.TenantId}-{r.Container}"
+                    let containerName   = r.QualifiedContainerName
                     let containerClient = serviceClient.GetBlobContainerClient(containerName)
                     let response = containerClient.DeleteBlob(r.ImageId)
 

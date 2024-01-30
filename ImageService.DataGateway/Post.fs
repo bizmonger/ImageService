@@ -8,54 +8,6 @@ open Azure.Storage.Blobs
 open BeachMobile.ImageService.Operations
 open BeachMobile.ImageService.Language
 
-module Tenant =
-
-    let add : Tenant.Add = 
-    
-        fun v -> task {
-
-            try
-                return Error "TODO"
-
-            with ex -> return Error (ex.GetBaseException().Message)
-        }
-
-module Upload =
-
-    let image : Upload.Image = 
-    
-        fun image -> task { 
-        
-            try
-                let containerName   = image.Details.QualifiedContainerName
-                let serviceClient   = BlobServiceClient(ServiceUri.Instance)
-                let containerClient = serviceClient.GetBlobContainerClient(containerName)
-                let blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
-
-                let! response = blobClient.UploadAsync(new MemoryStream(image.Content))
-
-                if response.HasValue
-                then return Ok()
-                else return Error "Failed to upload image"
-
-            with ex -> return Error <| ex.GetBaseException().Message
-        }
-
-    let images : Upload.Images = 
-    
-        fun requests -> task {
-        
-            let result = requests.Items |> Seq.map(fun r -> r |> image |> Async.AwaitTask)
-                                        |> Async.Parallel
-                                        |> Async.RunSynchronously
-                                        |> Seq.forall(fun r -> match r with 
-                                                               | Ok _    -> true 
-                                                               | Error _ -> false)
-            match result with
-            | false -> return Error "Error uploading all blob items"
-            | true  -> return Ok ()
-        }
-
 module Containers =
 
     let add : Container.Add =
@@ -143,4 +95,57 @@ module Containers =
                          | true  -> Ok ()
 
             with ex -> return Error <| ex.GetBaseException().Message
+        }
+
+module Tenant =
+
+    let add : Tenant.Add = 
+    
+        fun v -> task {
+
+            let addContainer containerName : ContainerRequest =
+                { TenantId= v.TenantId; Container= containerName }
+            try
+                return!
+                    v.ImageContainers |> Seq.map(addContainer) 
+                                      |> Containers.add 
+                                      |> Async.AwaitTask
+
+            with ex -> return Error (ex.GetBaseException().Message)
+        }
+
+module Upload =
+
+    let image : Upload.Image = 
+    
+        fun image -> task { 
+        
+            try
+                let containerName   = image.Details.QualifiedContainerName
+                let serviceClient   = BlobServiceClient(ServiceUri.Instance)
+                let containerClient = serviceClient.GetBlobContainerClient(containerName)
+                let blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
+
+                let! response = blobClient.UploadAsync(new MemoryStream(image.Content))
+
+                if response.HasValue
+                then return Ok()
+                else return Error "Failed to upload image"
+
+            with ex -> return Error <| ex.GetBaseException().Message
+        }
+
+    let images : Upload.Images = 
+    
+        fun requests -> task {
+        
+            let result = requests.Items |> Seq.map(fun r -> r |> image |> Async.AwaitTask)
+                                        |> Async.Parallel
+                                        |> Async.RunSynchronously
+                                        |> Seq.forall(fun r -> match r with 
+                                                               | Ok _    -> true 
+                                                               | Error _ -> false)
+            match result with
+            | false -> return Error "Error uploading all blob items"
+            | true  -> return Ok ()
         }

@@ -45,6 +45,4 @@ module Language =
 
     type ImageRequests = ImageRequest seq
 
-    type AddContainersRequest = ContainerRequest seq
-
     type ContainersRequest = ContainerRequest seq

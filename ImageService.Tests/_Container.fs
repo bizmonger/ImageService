@@ -57,17 +57,16 @@ let ``Remove images`` () =
         | Error msg -> Assert.Fail msg
         | Ok _ ->
 
-            // Test
             match! Upload.images someAddImagesRequest with
             | Error msg -> Assert.Fail msg
             | Ok _      ->
 
+                // Test
                 match! Containers.removeImages [someImageRequest] with
                 | Error msg -> Assert.Fail msg
                 | Ok _ ->
 
-                    // Test
                     match! ListImages.byContainer someContainerRequest with
                     | Error msg -> Assert.Fail msg
-                    | Ok _      -> Assert.Pass()
+                    | Ok images -> Assert.That(images |> Seq.isEmpty)
     }

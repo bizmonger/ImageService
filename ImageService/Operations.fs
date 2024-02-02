@@ -18,7 +18,7 @@ module Operations =
 
     module Tenant =
 
-        type Add    = AddTenantRequest    -> Task<Result<unit, ErrorDescription>>
+        type Add = AddTenantRequest -> Task<Result<unit, ErrorDescription>>
 
     module Upload =
 

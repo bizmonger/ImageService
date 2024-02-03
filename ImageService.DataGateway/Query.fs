@@ -88,7 +88,7 @@ module Download =
 
             try 
                 let serviceClient = BlobServiceClient(ServiceUri.Instance)
-                let container = serviceClient.GetBlobContainerClient(v.QualifiedContainerName)
+                let container = serviceClient.GetBlobContainerClient(v.Container.QualifiedName)
 
                 return download v.ImageId container
 

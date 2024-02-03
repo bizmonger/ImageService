@@ -5,18 +5,17 @@ module Language =
     type ErrorDescription = string
     type ImageId = string
 
-    type ImageRequest = {
-        ImageId   : ImageId
-        Container : string
-        TenantId  : string
-
-    } with member x.QualifiedContainerName = $"{x.TenantId}-{x.Container}"
-
     type ContainerRequest = {
         TenantId  : string
         Container : string
 
     } with member x.QualifiedName = $"{x.TenantId}-{x.Container}"
+
+
+    type ImageRequest = {
+        ImageId   : ImageId
+        Container : ContainerRequest
+    }
 
     type AllImagesRequest = {
         TenantId : string

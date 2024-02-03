@@ -9,9 +9,13 @@ module Mock =
     let someContainer2 = "some-container-2"
     let someTitle      = "some title"
 
-    let someImageDetails : ImageRequest = {
+    let someContainerRequest : ContainerRequest = {
         TenantId  = someTenantId
         Container = someContainer1
+    }
+
+    let someImageDetails : ImageRequest = {
+        Container = someContainerRequest
         ImageId   = someTitle
     }
 
@@ -22,11 +26,6 @@ module Mock =
 
     let someAddImagesRequest : UploadImagesRequest = {
         Items = seq [someAddImageRequest]
-    }
-
-    let someContainerRequest : ContainerRequest = {
-        TenantId  = someTenantId
-        Container = someContainer1
     }
 
     let someAllImagesRequest : AllImagesRequest = {
@@ -40,8 +39,7 @@ module Mock =
 
     let someImageRequest : ImageRequest = {
         ImageId   = someTitle
-        Container = someContainer1
-        TenantId  = someTenantId
+        Container = someContainerRequest
     }
 
     let someContainersRequest = [someContainerRequest]

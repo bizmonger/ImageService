@@ -78,7 +78,7 @@ module Containers =
 
                 let delete (r:ImageRequest) =
 
-                    let containerName   = r.QualifiedContainerName
+                    let containerName   = r.Container.QualifiedName
                     let containerClient = serviceClient.GetBlobContainerClient(containerName)
                     let response = containerClient.DeleteBlob(r.ImageId)
 
@@ -121,7 +121,7 @@ module Upload =
         fun image -> task { 
         
             try
-                let containerName   = image.Details.QualifiedContainerName
+                let containerName   = image.Details.Container.QualifiedName
                 let serviceClient   = BlobServiceClient(ServiceUri.Instance)
                 let containerClient = serviceClient.GetBlobContainerClient(containerName)
                 let blobClient      = containerClient.GetBlobClient(image.Details.ImageId)

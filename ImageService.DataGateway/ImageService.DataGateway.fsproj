@@ -6,8 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Query.fs" />
-    <Compile Include="Post.fs" />
+    <Compile Include="CdnQuery.fs" />
+    <Compile Include="CdnPost.fs" />
+    <Compile Include="BlobQuery.fs" />
+    <Compile Include="BlobPost.fs" />
   </ItemGroup>
 
   <ItemGroup>

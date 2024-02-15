@@ -4,7 +4,7 @@ open System.Configuration
 open NUnit.Framework
 open ImageService.DataGateway
 open ImageService.TestAPI.Mock
-open BeachMobile.ImageService.Language
+open BeachMobile.BlobService.Language
 
 [<Test>]
 let ``Add container`` () =
@@ -57,7 +57,7 @@ let ``Remove images`` () =
         | Error msg -> Assert.Fail msg
         | Ok _ ->
 
-            match! Upload.images someAddImagesRequest with
+            match! Upload.blobs someAddImagesRequest with
             | Error msg -> Assert.Fail msg
             | Ok _      ->
 

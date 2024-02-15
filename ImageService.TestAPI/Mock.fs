@@ -1,6 +1,6 @@
 ﻿namespace ImageService.TestAPI
 
-open BeachMobile.ImageService.Language
+open BeachMobile.BlobService.Language
 
 module Mock =
 
@@ -14,30 +14,30 @@ module Mock =
         Container = someContainer1
     }
 
-    let someImageDetails : ImageRequest = {
+    let someImageDetails : BlobRequest = {
         Container = someContainerRequest
         ImageId   = someTitle
     }
 
-    let someAddImageRequest : UploadImageRequest = {
+    let someAddImageRequest : UploadBlobRequest = {
         Details = someImageDetails
         Content = Array.zeroCreate 0
     }
 
-    let someAddImagesRequest : UploadImagesRequest = {
+    let someAddImagesRequest : UploadBlobsRequest = {
         Items = seq [someAddImageRequest]
     }
 
-    let someAllImagesRequest : AllImagesRequest = {
+    let someAllImagesRequest : AllIBlobsRequest = {
         TenantId = someTenantId
     }
 
     let someTenantRequest : AddTenantRequest = {
         TenantId = someTenantId
-        ImageContainers = [someContainer1; someContainer2]
+        BlobContainers = [someContainer1; someContainer2]
     }
 
-    let someImageRequest : ImageRequest = {
+    let someImageRequest : BlobRequest = {
         ImageId   = someTitle
         Container = someContainerRequest
     }

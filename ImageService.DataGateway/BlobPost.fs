@@ -5,8 +5,8 @@
 
 open System.IO
 open Azure.Storage.Blobs
-open BeachMobile.ImageService.Operations
-open BeachMobile.ImageService.Language
+open BeachMobile.BlobService.Operations
+open BeachMobile.BlobService.Language
 
 module Containers =
 
@@ -76,7 +76,7 @@ module Containers =
 
                 let  serviceClient = BlobServiceClient(ServiceUri.Instance)
 
-                let delete (r:ImageRequest) =
+                let delete (r:BlobRequest) =
 
                     let containerName   = r.Container.QualifiedName
                     let containerClient = serviceClient.GetBlobContainerClient(containerName)
@@ -107,26 +107,26 @@ module Tenant =
                 { TenantId= v.TenantId; Container= containerName }
             try
                 return!
-                    v.ImageContainers |> Seq.map(addContainer) 
-                                      |> Containers.add 
-                                      |> Async.AwaitTask
+                    v.BlobContainers |> Seq.map(addContainer) 
+                                     |> Containers.add 
+                                     |> Async.AwaitTask
 
             with ex -> return Error (ex.GetBaseException().Message)
         }
 
 module Upload =
 
-    let image : Upload.Image = 
+    let blob : Upload.Blob = 
     
-        fun image -> task { 
+        fun blob -> task { 
         
             try
-                let containerName   = image.Details.Container.QualifiedName
+                let containerName   = blob.Details.Container.QualifiedName
                 let serviceClient   = BlobServiceClient(ServiceUri.Instance)
                 let containerClient = serviceClient.GetBlobContainerClient(containerName)
-                let blobClient      = containerClient.GetBlobClient(image.Details.ImageId)
+                let blobClient      = containerClient.GetBlobClient(blob.Details.ImageId)
 
-                let! response = blobClient.UploadAsync(new MemoryStream(image.Content))
+                let! response = blobClient.UploadAsync(new MemoryStream(blob.Content))
 
                 if response.HasValue
                 then return Ok()
@@ -135,11 +135,11 @@ module Upload =
             with ex -> return Error <| ex.GetBaseException().Message
         }
 
-    let images : Upload.Images = 
+    let blobs : Upload.Blobs = 
     
         fun requests -> task {
         
-            let result = requests.Items |> Seq.map(fun r -> r |> image |> Async.AwaitTask)
+            let result = requests.Items |> Seq.map(fun r -> r |> blob |> Async.AwaitTask)
                                         |> Async.Parallel
                                         |> Async.RunSynchronously
                                         |> Seq.forall(fun r -> match r with 

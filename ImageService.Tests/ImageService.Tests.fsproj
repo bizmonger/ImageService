@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -41,9 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ImageService.DataGateway\ImageService.DataGateway.fsproj" />
+    <ProjectReference Include="..\ImageService.DataGateway\BlobService.DataGateway.fsproj" />
     <ProjectReference Include="..\ImageService.TestAPI\ImageService.TestAPI.fsproj" />
-    <ProjectReference Include="..\ImageService\ImageService.Specification.fsproj" />
+    <ProjectReference Include="..\ImageService\BlobService.Specification.fsproj" />
   </ItemGroup>
 
 </Project>

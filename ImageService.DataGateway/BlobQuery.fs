@@ -7,7 +7,7 @@ open System
 open Azure.Storage.Blobs
 open Azure.Storage.Blobs.Models
 open Azure.Identity
-open BeachMobile.ImageService
+open BeachMobile.BlobService
 open Language
 open Operations
 

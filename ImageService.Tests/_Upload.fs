@@ -4,7 +4,7 @@ open System.Configuration
 open NUnit.Framework
 open ImageService.DataGateway
 open ImageService.TestAPI.Mock
-open BeachMobile.ImageService.Language
+open BeachMobile.BlobService.Language
 
 [<Test>]
 let ``Upload image`` () =
@@ -21,7 +21,7 @@ let ``Upload image`` () =
         | Ok _ ->
 
             // Test
-            match! Upload.image someAddImageRequest with
+            match! Upload.blob someAddImageRequest with
             | Error msg -> Assert.Fail msg
             | Ok _      ->
 
@@ -46,7 +46,7 @@ let ``Upload images`` () =
         | Ok _ ->
 
             // Test
-            match! Upload.images someAddImagesRequest with
+            match! Upload.blobs someAddImagesRequest with
             | Error msg -> Assert.Fail msg
             | Ok _      ->
 

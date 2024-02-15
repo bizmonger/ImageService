@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ImageService\ImageService.Specification.fsproj" />
+    <ProjectReference Include="..\ImageService\BlobService.Specification.fsproj" />
   </ItemGroup>
 
 </Project>

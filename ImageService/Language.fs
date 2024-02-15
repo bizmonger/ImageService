@@ -1,4 +1,4 @@
-﻿namespace BeachMobile.ImageService
+﻿namespace BeachMobile.BlobService
 
 module Language =
 
@@ -12,12 +12,12 @@ module Language =
     } with member x.QualifiedName = $"{x.TenantId}-{x.Container}"
 
 
-    type ImageRequest = {
+    type BlobRequest = {
         ImageId   : ImageId
         Container : ContainerRequest
     }
 
-    type AllImagesRequest = {
+    type AllIBlobsRequest = {
         TenantId : string
     }
 
@@ -30,18 +30,18 @@ module Language =
 
     type AddTenantRequest = {
         TenantId : string
-        ImageContainers : string seq
+        BlobContainers : string seq
     }
 
-    type UploadImageRequest = {
-        Details : ImageRequest
+    type UploadBlobRequest = {
+        Details : BlobRequest
         Content : byte[]
     }
 
-    type UploadImagesRequest = {
-        Items : UploadImageRequest seq
+    type UploadBlobsRequest = {
+        Items : UploadBlobRequest seq
     }
 
-    type ImageRequests = ImageRequest seq
+    type ImageRequests = BlobRequest seq
 
     type ContainersRequest = ContainerRequest seq
